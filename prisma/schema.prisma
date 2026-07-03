@@ -7,8 +7,8 @@ generator client {
     output   = "../src/lib/generated/prisma"
     // Pinned explicitly (rather than relying on tsconfig auto-detection) so
     // `prisma generate` can run standalone at container startup - see
-    // entrypoint.sh and src/lib/server/db-adapter.ts / prisma.ts, which rely
-    // on the generated client being plain, directly-runnable ESM+TS.
+    // entrypoint.sh and prisma/db-adapter.ts / src/lib/server/prisma.ts, which
+    // rely on the generated client being plain, directly-runnable ESM+TS.
     moduleFormat           = "esm"
     generatedFileExtension = "ts"
     importFileExtension    = "ts"

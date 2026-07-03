@@ -101,7 +101,18 @@ DATABASE_URL=postgresql://user:password@host:5432/wishlist?sslmode=require
 **Requirements:**
 
 - Postgres 14 or newer.
-- The connecting user must be able to run `CREATE EXTENSION IF NOT EXISTS citext;`. Wishlist relies on Postgres' [`citext`](https://www.postgresql.org/docs/current/citext.html) type to get the same case-insensitive username/email matching and uniqueness that the SQLite database provides via a case-insensitive collation. The extension is created automatically as part of Wishlist's first migration, but the database user needs sufficient privileges to do so (this is normally the case for the owner of the database).
+- The [`citext`](https://www.postgresql.org/docs/current/citext.html) extension must be available on the database (see the callout below).
+
+> [!IMPORTANT]
+> **The `citext` extension is required.** Wishlist uses Postgres' `citext` type on the `username` and `email` columns to reproduce the case-insensitive matching and uniqueness that the SQLite database gets from a case-insensitive collation. Wishlist's first migration runs `CREATE EXTENSION IF NOT EXISTS citext;`, but **`CREATE EXTENSION` requires elevated privileges** that a least-privilege (managed) application role often does not have.
+>
+> To avoid a failed first start, have a privileged role run this **once, on the target database, before the first launch**:
+>
+> ```sql
+> CREATE EXTENSION IF NOT EXISTS citext;
+> ```
+>
+> After that, the `IF NOT EXISTS` statement in the migration is a harmless no-op that needs no privilege. Managed providers vary: **Supabase** ships `citext` preinstalled, and on **AWS RDS** a member of the `rds_superuser` role can create it. Check your provider's docs for how to enable extensions.
 
 Example Postgres service you can add to your own `docker-compose.yaml` if you don't already have a Postgres server running elsewhere (adjust volumes/credentials as needed):
 
@@ -133,6 +144,13 @@ services:
 
 > [!WARNING]
 > Migrating existing data from a SQLite install to Postgres is not supported. Choose your database provider before creating your first user, or plan on starting fresh.
+
+### Running without Docker (bare metal)
+
+The official Docker image is the recommended way to run Wishlist and needs none of the notes below. If you instead run the built app directly with `node build`, two extra constraints apply because the generated Prisma Client is loaded from disk at runtime (as a `.ts` module) rather than bundled into the server:
+
+- **Node.js 22.18 or newer is required.** Loading the generated client relies on Node's runtime TypeScript type-stripping, which is only available (unflagged) from 22.18 onward.
+- **Launch the app from the app root.** The client is resolved relative to `process.cwd()`, so start the process from the project root (the directory containing `src/lib/generated/prisma`), not from an arbitrary working directory.
 
 ### Running behind a reverse proxy
 
