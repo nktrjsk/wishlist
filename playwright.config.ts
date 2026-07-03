@@ -77,8 +77,10 @@ export default defineConfig({
 
     /* Run your local dev server before starting the tests */
     webServer: {
-        command:
-            "docker compose -f tests/docker/docker-compose.yaml up --remove-orphans --renew-anon-volumes --force-recreate",
+        // Defaults to the SQLite compose file. Set PLAYWRIGHT_DOCKER_COMPOSE_FILE
+        // to tests/docker/docker-compose.postgres.yaml to run the same suite
+        // against Postgres instead (see the "test-postgres" CI job).
+        command: `docker compose -f ${process.env.PLAYWRIGHT_DOCKER_COMPOSE_FILE ?? "tests/docker/docker-compose.yaml"} up --remove-orphans --renew-anon-volumes --force-recreate`,
         url: "http://localhost:3280",
         gracefulShutdown: {
             signal: "SIGTERM",

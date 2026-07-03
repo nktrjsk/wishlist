@@ -77,6 +77,63 @@ You can now connect to your application at `http://<host>:3280`.
 
 `MAX_IMAGE_SIZE`: Maxinum image size that can be uploaded (in bytes). Defaults to 5000000 (5MB)
 
+`DATABASE_URL`: The database connection string. Defaults to a local SQLite database. See [Database](#database) below for details, including how to opt in to Postgres.
+
+### Database
+
+By default, Wishlist stores all of its data in a local SQLite database file (`/usr/src/app/data/prod.db` in the Docker image), and requires no configuration at all. This is the recommended setup for most self-hosted deployments.
+
+If you already run your own Postgres server (14+) and would prefer Wishlist use it instead, you can opt in by setting the `DATABASE_URL` environment variable to a `postgres://` or `postgresql://` connection string:
+
+```
+DATABASE_URL=postgresql://user:password@host:5432/wishlist
+```
+
+> [!NOTE]
+> Wishlist does not bundle or manage a Postgres server for you - you must bring your own (a managed database, a Postgres instance you already run, etc). This is a "bring your own database" (BYO) integration, not a default part of the Docker Compose setup.
+
+If your Postgres provider requires (or you want to enforce) TLS, add `sslmode` to the connection string, e.g. `?sslmode=require` (or `verify-full` for stricter certificate validation with managed providers like RDS, Supabase, Neon, etc.):
+
+```
+DATABASE_URL=postgresql://user:password@host:5432/wishlist?sslmode=require
+```
+
+**Requirements:**
+
+- Postgres 14 or newer.
+- The connecting user must be able to run `CREATE EXTENSION IF NOT EXISTS citext;`. Wishlist relies on Postgres' [`citext`](https://www.postgresql.org/docs/current/citext.html) type to get the same case-insensitive username/email matching and uniqueness that the SQLite database provides via a case-insensitive collation. The extension is created automatically as part of Wishlist's first migration, but the database user needs sufficient privileges to do so (this is normally the case for the owner of the database).
+
+Example Postgres service you can add to your own `docker-compose.yaml` if you don't already have a Postgres server running elsewhere (adjust volumes/credentials as needed):
+
+```yaml
+services:
+    wishlist:
+        container_name: wishlist
+        image: ghcr.io/cmintey/wishlist:latest
+        ports:
+            - 3280:3280
+        volumes:
+            - ./uploads:/usr/src/app/uploads
+        environment:
+            ORIGIN: http://192.168.2.10:3280
+            DATABASE_URL: postgresql://wishlist:wishlist@postgres:5432/wishlist
+        depends_on:
+            - postgres
+
+    postgres:
+        image: postgres:16
+        restart: unless-stopped
+        environment:
+            POSTGRES_USER: wishlist
+            POSTGRES_PASSWORD: wishlist
+            POSTGRES_DB: wishlist
+        volumes:
+            - ./postgres-data:/var/lib/postgresql/data
+```
+
+> [!WARNING]
+> Migrating existing data from a SQLite install to Postgres is not supported. Choose your database provider before creating your first user, or plan on starting fresh.
+
 ### Running behind a reverse proxy
 
 It is recommended to run Wishlist behind a reverse proxy. Currently, Wishlist does not support running on a different subpath (i.e. `https://domain.com/wishlist`).
