@@ -5,10 +5,11 @@
     import { getFormatter } from "$lib/i18n";
 
     interface Props {
-        config: Pick<Config, "defaultCurrency">;
+        config: Pick<Config, "defaultCurrency" | "currencyConversion">;
+        forGroup?: boolean;
     }
 
-    const { config }: Props = $props();
+    const { config, forGroup = false }: Props = $props();
     const t = getFormatter();
 </script>
 
@@ -19,4 +20,23 @@
             <CurrencySelect id="defaultCurrency" name="defaultCurrency" value={config.defaultCurrency} />
         </label>
     </Setting>
+
+    {#if !forGroup}
+        <Setting>
+            <label class="checkbox-label">
+                <input
+                    id="currencyConversion"
+                    name="currencyConversion"
+                    class="checkbox"
+                    checked={config.currencyConversion}
+                    type="checkbox"
+                />
+                <span>{$t("admin.currency-conversion")}</span>
+            </label>
+
+            {#snippet description()}
+                {$t("admin.currency-conversion-tooltip")}
+            {/snippet}
+        </Setting>
+    {/if}
 </SettingsGroup>

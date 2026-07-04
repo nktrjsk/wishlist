@@ -72,9 +72,33 @@ const groups = async () => {
     }
 };
 
+const exchangeRates = async () => {
+    if (!process.env.SEED_TEST_FX_RATES) {
+        return;
+    }
+    await prisma.exchangeRates.upsert({
+        where: { id: "global" },
+        create: {
+            id: "global",
+            base: "USD",
+            rates: JSON.stringify({ USD: 1, EUR: 0.5, JPY: 100 }),
+            ratesDate: "2026-01-01 00:00:00 UTC",
+            fetchedAt: new Date()
+        },
+        update: {
+            base: "USD",
+            rates: JSON.stringify({ USD: 1, EUR: 0.5, JPY: 100 }),
+            ratesDate: "2026-01-01 00:00:00 UTC",
+            fetchedAt: new Date()
+        }
+    });
+    console.log("seeded test exchange rates");
+};
+
 const main = async () => {
     await roles();
     await groups();
+    await exchangeRates();
 };
 
 main()

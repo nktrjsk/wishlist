@@ -75,6 +75,10 @@ You can now connect to your application at `http://<host>:3280`.
 
 `DEFAULT_CURRENCY`: The global default currency (ISO-Code) to be used. Currency can still be changed on a per-item basis
 
+`FX_PROVIDER_URL`: Optional. Exchange-rate provider endpoint for currency conversion. Defaults to the free, keyless `https://open.er-api.com/v6/latest/USD`. Rates are cached daily; conversion can be disabled by admins in Settings
+
+`FX_API_KEY`: Optional. Bearer token sent to the exchange-rate provider, if your chosen `FX_PROVIDER_URL` requires one
+
 `MAX_IMAGE_SIZE`: Maxinum image size that can be uploaded (in bytes). Defaults to 5000000 (5MB)
 
 `DATABASE_URL`: The database connection string. Defaults to a local SQLite database. See [Database](#database) below for details, including how to opt in to Postgres.

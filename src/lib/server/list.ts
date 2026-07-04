@@ -15,6 +15,7 @@ export interface GetItemsOptions {
     listOwnerId: string;
     listManagers?: Set<string>;
     loggedInUserId: string | null;
+    fx?: FxData | null;
 }
 
 export interface ListProperties {
@@ -218,7 +219,8 @@ export const getItems = async (listId: string, options: GetItemsOptions) => {
                 sort: options.sort,
                 dir: options.sortDir,
                 userId: options.loggedInUserId,
-                listOwnerId: options.listOwnerId
+                listOwnerId: options.listOwnerId,
+                fx: options.fx
             })
         );
 };

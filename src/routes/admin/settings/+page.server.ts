@@ -127,6 +127,7 @@ const generateConfig = (configData: z.infer<typeof settingSchema>) => {
         },
         defaultGroup: configData.defaultGroup,
         defaultCurrency: configData.defaultCurrency,
+        currencyConversion: configData.currencyConversion,
         enableDefaultListCreation: configData.enableDefaultListCreation,
         allowPublicLists: configData.allowPublicLists,
         oidc: oidcConfig

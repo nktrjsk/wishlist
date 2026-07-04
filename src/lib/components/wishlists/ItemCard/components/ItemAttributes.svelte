@@ -1,7 +1,8 @@
 <script lang="ts">
+    import { page } from "$app/state";
     import Markdown from "$lib/components/Markdown.svelte";
     import { getFormatter } from "$lib/i18n";
-    import { formatPrice } from "$lib/price-formatter";
+    import { formatPrice, getConvertedPriceString } from "$lib/price-formatter";
     import { shouldShowName, getClaimedName } from "../../util";
     import type { ItemCardProps } from "../ItemCard.svelte";
 
@@ -27,6 +28,8 @@
     }: Props = $props();
 
     let expandClaims = $state(false);
+
+    const converted = $derived(getConvertedPriceString(item, (page.data as { fx?: FxData }).fx));
 </script>
 
 <!-- Price with fallback -->
@@ -35,6 +38,17 @@
         <iconify-icon icon="ion:pricetag"></iconify-icon>
         <span data-testid="price">
             {formatPrice(item)}
+            {#if converted}
+                <span
+                    class="opacity-70"
+                    data-testid="price-converted"
+                    title={$t("wishes.rate-as-of", {
+                        values: { date: (page.data as { fx?: FxData }).fx?.ratesDate ?? "" }
+                    })}
+                >
+                    (≈ {converted})
+                </span>
+            {/if}
         </span>
     </div>
 {/if}

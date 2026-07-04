@@ -8,6 +8,7 @@ services:
         environment:
             ORIGIN: http://localhost:3280
             DATABASE_URL: postgresql://wishlist:wishlist@localhost:5432/wishlist
+            SEED_TEST_FX_RATES: "1"
         depends_on:
             postgres:
                 condition: service_healthy

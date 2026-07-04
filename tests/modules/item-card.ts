@@ -9,6 +9,7 @@ export class ItemCard {
     private readonly name: Locator;
     private readonly image: Locator;
     private readonly price: Locator;
+    private readonly priceConverted: Locator;
     private readonly quantity: Locator;
     private readonly quantityDesired: Locator;
     private readonly quantityClaimed: Locator;
@@ -24,6 +25,7 @@ export class ItemCard {
         this.name = card.getByTestId("name");
         this.image = card.getByTestId("image");
         this.price = card.getByTestId("price");
+        this.priceConverted = card.getByTestId("price-converted");
         this.quantity = card.getByTestId("quantity");
         this.quantityDesired = card.getByTestId("quantity-desired");
         this.quantityClaimed = card.getByTestId("quantity-claimed");
@@ -67,6 +69,17 @@ export class ItemCard {
 
     async assertNoPrice() {
         await expect(this.price).not.toBeVisible({ timeout: 100 });
+        return this;
+    }
+
+    async assertPriceContains(text: string) {
+        await expect(this.price).toContainText(text);
+        return this;
+    }
+
+    async assertConvertedPrice(text: string) {
+        await expect(this.priceConverted).toBeVisible();
+        await expect(this.priceConverted).toContainText(text);
         return this;
     }
 

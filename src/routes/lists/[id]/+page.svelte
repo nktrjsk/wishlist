@@ -94,7 +94,8 @@
                 userId: data.user?.id,
                 sort: page.url.searchParams.get("sort"),
                 dir: page.url.searchParams.get("dir"),
-                listOwnerId: data.list.owner.id
+                listOwnerId: data.list.owner.id,
+                fx: data.fx
             })
         );
     };

@@ -1,7 +1,8 @@
 <script lang="ts">
+    import { page } from "$app/state";
     import type { ItemOnListDTO } from "$lib/dtos/item-dto";
     import { getFormatter } from "$lib/i18n";
-    import { formatNumberAsPrice } from "$lib/price-formatter";
+    import { formatNumberAsPrice, getConvertedTotalString } from "$lib/price-formatter";
 
     interface Props {
         items: ItemOnListDTO[];
@@ -28,6 +29,13 @@
     });
     const highestTotal = $derived(totalCostByCurrency[0]);
 
+    const convertedTotal = $derived(getConvertedTotalString(totalCostByCurrency, (page.data as { fx?: FxData }).fx));
+    const showConvertedTotal = $derived(
+        !!convertedTotal &&
+            (totalCostByCurrency.length > 1 ||
+                totalCostByCurrency[0]?.currency !== (page.data as { fx?: FxData }).fx?.targetCurrency)
+    );
+
     let seePrices = $state(false);
 </script>
 
@@ -37,6 +45,17 @@
         {#if totalCostByCurrency.length > 0}
             <span>·</span>
             <span>{formatNumberAsPrice(highestTotal.currency, highestTotal.total)}</span>
+            {#if showConvertedTotal}
+                <span
+                    class="opacity-70"
+                    data-testid="total-converted"
+                    title={$t("wishes.rate-as-of", {
+                        values: { date: (page.data as { fx?: FxData }).fx?.ratesDate ?? "" }
+                    })}
+                >
+                    (≈ {convertedTotal})
+                </span>
+            {/if}
             {#if totalCostByCurrency.length > 1 && !seePrices}
                 <button onclick={() => (seePrices = !seePrices)}>
                     <span class="text-surface-900/70 dark:text-surface-50/50 text-xs">

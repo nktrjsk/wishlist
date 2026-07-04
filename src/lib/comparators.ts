@@ -1,10 +1,12 @@
 import type { ItemOnListDTO } from "./dtos/item-dto";
+import { convertAmount, getPriceValue } from "$lib/price-formatter";
 
 interface SortOptions {
     sort: string | null;
     dir: string | null;
     userId?: string | null;
     listOwnerId: string;
+    fx?: FxData | null;
 }
 
 export function itemSorter(opts: SortOptions) {
@@ -17,7 +19,7 @@ export function itemSorter(opts: SortOptions) {
 
         if (opts.sort === "price") {
             const reversed = opts.dir === "desc";
-            const price = comparePrice(a, b, { reversed, nullsLast: reversed });
+            const price = comparePrice(a, b, { reversed, nullsLast: reversed, fx: opts.fx });
             if (price !== 0) return price;
         }
 
@@ -25,11 +27,29 @@ export function itemSorter(opts: SortOptions) {
     };
 }
 
-export function comparePrice(a: ItemOnListDTO, b: ItemOnListDTO, opts?: { reversed?: boolean; nullsLast?: boolean }) {
-    if (a.itemPrice === null && b.itemPrice === null) return 0;
-    if (a.itemPrice === null) return opts?.reversed && !opts?.nullsLast ? -1 : 1;
-    if (b.itemPrice === null) return opts?.reversed && !opts?.nullsLast ? 1 : -1;
-    const comp = a.itemPrice.value - b.itemPrice.value;
+export function comparePrice(
+    a: ItemOnListDTO,
+    b: ItemOnListDTO,
+    opts?: { reversed?: boolean; nullsLast?: boolean; fx?: FxData | null }
+) {
+    const priceOf = (item: ItemOnListDTO): number | null => {
+        if (item.itemPrice === null) return null;
+        const major = getPriceValue(item);
+        if (major === null) return null;
+        if (opts?.fx?.enabled) {
+            // Convert to the viewer's currency; null (unconvertible) sorts like no price.
+            return convertAmount(major, item.itemPrice.currency, opts.fx.targetCurrency, opts.fx.rates);
+        }
+        // FX disabled/absent: legacy currency-naive comparison on raw minor units.
+        return item.itemPrice.value;
+    };
+
+    const pa = priceOf(a);
+    const pb = priceOf(b);
+    if (pa === null && pb === null) return 0;
+    if (pa === null) return opts?.reversed && !opts?.nullsLast ? -1 : 1;
+    if (pb === null) return opts?.reversed && !opts?.nullsLast ? 1 : -1;
+    const comp = pa - pb;
     return opts?.reversed ? -comp : comp;
 }
 

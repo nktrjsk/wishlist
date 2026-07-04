@@ -14,6 +14,7 @@
             | "claims"
             | "defaultGroup"
             | "defaultCurrency"
+            | "currencyConversion"
             | "suggestions"
             | "enableDefaultListCreation"
             | "listMode"
@@ -43,7 +44,7 @@
 
     <Lists {config} />
 
-    <Currency {config} />
+    <Currency {config} {forGroup} />
 
     {#if !forGroup}
         <Groups {config} {groups} />

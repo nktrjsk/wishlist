@@ -226,3 +226,13 @@ model Patch {
 
     @@map("patch")
 }
+
+model ExchangeRates {
+    id        String   @id @default("global")
+    base      String
+    rates     String
+    ratesDate String
+    fetchedAt DateTime @default(now())
+
+    @@map("exchange_rates")
+}

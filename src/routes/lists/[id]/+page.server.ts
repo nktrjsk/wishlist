@@ -1,6 +1,7 @@
 import { error, redirect } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types";
 import { getConfig } from "$lib/server/config";
+import { getFxData } from "$lib/server/fx";
 import { getFormatter } from "$lib/server/i18n";
 import { getById, getItems, type GetItemsOptions } from "$lib/server/list";
 import { getActiveMembership } from "$lib/server/group-membership";
@@ -33,6 +34,7 @@ export const load = (async ({ params, url, locals, depends, cookies }) => {
     }
 
     const config = await getConfig(list.groupId);
+    const fx = await getFxData(locals.user, config);
 
     const options: GetItemsOptions = {
         filter: url.searchParams.get("filter"),
@@ -41,7 +43,8 @@ export const load = (async ({ params, url, locals, depends, cookies }) => {
         suggestionMethod: config.suggestions.method,
         listOwnerId: list.owner.id,
         listManagers: new Set(list.managers.map(({ userId }) => userId)),
-        loggedInUserId: locals.user?.id || null
+        loggedInUserId: locals.user?.id || null,
+        fx
     };
 
     const items = await getItems(list.id, options);
@@ -76,6 +79,7 @@ export const load = (async ({ params, url, locals, depends, cookies }) => {
         showClaimForOwner: config.claims.showForOwner,
         requireClaimEmail: config.claims.requireEmail,
         suggestionsEnabled: config.suggestions.enable,
-        initialViewPreference: viewPreference || "list"
+        initialViewPreference: viewPreference || "list",
+        fx
     };
 }) satisfies PageServerLoad;
