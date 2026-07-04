@@ -110,6 +110,7 @@ type Config = {
     };
     defaultGroup?: string | null;
     defaultCurrency: string;
+    currencyConversion: boolean;
     enableDefaultListCreation: boolean;
     allowPublicLists: boolean;
     oidc: OIDCConfig;

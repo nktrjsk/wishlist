@@ -80,6 +80,7 @@ export const settingSchema = z.object({
     disablePasswordLogin: z.coerce.boolean().default(false),
     defaultGroup: z.string().optional(),
     defaultCurrency: currencyCode,
+    currencyConversion: z.coerce.boolean().default(false),
     enableDefaultListCreation: z.coerce.boolean().default(false),
     allowPublicLists: z.coerce.boolean().default(false),
     enableOIDC: z.coerce.boolean().default(false),

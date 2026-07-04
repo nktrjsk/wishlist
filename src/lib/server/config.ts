@@ -25,6 +25,7 @@ enum ConfigKey {
     SECURITY_DISABLE_PASSWORD_LOGIN = "security.disablePasswordLogin",
     DEFAULT_GROUP = "defaultGroup",
     DEFAULT_CURRENCY = "defaultCurrency",
+    CURRENCY_CONVERSION = "currencyConversion",
     ENABLE_DEFAULT_LIST_CREATION = "enableDefaultListCreation",
     ALLOW_PUBLIC_LISTS = "allowPublicLists",
     OIDC_ENABLE = "oidc.enable",
@@ -72,6 +73,7 @@ const transformers: Record<ConfigKey, Transformer<unknown>> = {
     "security.disablePasswordLogin": booleanTransformer,
     defaultGroup: stringTransformer,
     defaultCurrency: stringTransformer,
+    currencyConversion: booleanTransformer,
     enableDefaultListCreation: booleanTransformer,
     allowPublicLists: booleanTransformer,
     "oidc.enable": booleanTransformer,
@@ -110,6 +112,7 @@ const getDefaultConfig = (): Config => ({
         disablePasswordLogin: false
     },
     defaultCurrency: getDefaultCurrency(),
+    currencyConversion: true,
     enableDefaultListCreation: true,
     allowPublicLists: false,
     oidc: {
