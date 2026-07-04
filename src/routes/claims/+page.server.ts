@@ -4,6 +4,8 @@ import { getActiveMembership } from "$lib/server/group-membership";
 import { toItemOnListDTO } from "$lib/dtos/item-mapper";
 import { requireLogin } from "$lib/server/auth";
 import { decodeMultiValueFilter } from "$lib/server/sort-filter-util";
+import { getConfig } from "$lib/server/config";
+import { getFxData } from "$lib/server/fx";
 
 export const load: PageServerLoad = async ({ url, cookies }) => {
     const user = requireLogin();
@@ -105,12 +107,16 @@ export const load: PageServerLoad = async ({ url, cookies }) => {
         return toItemOnListDTO(item, claim.listId);
     });
 
+    const config = await getConfig(activeMembership.groupId);
+    const fx = await getFxData(user, config);
+
     return {
         user: {
             ...user,
             activeGroupId: activeMembership.groupId
         },
         items: itemDTOs,
-        initialViewPreference: viewPreference || "list"
+        initialViewPreference: viewPreference || "list",
+        fx
     };
 };

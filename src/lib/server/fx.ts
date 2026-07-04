@@ -2,14 +2,6 @@ import { client } from "$lib/server/prisma";
 import { env } from "$env/dynamic/private";
 import { logger } from "./logger";
 
-export type FxData = {
-    enabled: boolean;
-    targetCurrency: string;
-    base: string | null;
-    rates: Record<string, number>;
-    ratesDate: string | null;
-};
-
 const RATE_TTL_MS = 1000 * 60 * 60 * 24; // 24h
 let isRefreshing = false;
 

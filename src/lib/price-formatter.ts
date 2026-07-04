@@ -99,3 +99,55 @@ export const getLocaleConfig = (formatter: Intl.NumberFormat) => {
         return prev;
     }, defaultConfig);
 };
+
+// Cross-rate conversion in MAJOR currency units. `rates` are units-per-1-base
+// (e.g. open.er-api's USD-based map). Returns null when either currency is
+// missing from the rate table (the common "no rate for target" fallback path).
+export const convertAmount = (
+    amount: number,
+    from: string,
+    to: string,
+    rates: Record<string, number>
+): number | null => {
+    if (from === to) return amount;
+    const rFrom = rates[from];
+    const rTo = rates[to];
+    if (!rFrom || !rTo) return null;
+    return amount * (rTo / rFrom);
+};
+
+// Formatted converted price for a single item, or null when conversion is
+// disabled / not applicable / unavailable. Used to render "(≈ …)".
+export const getConvertedPriceString = (
+    item: ItemWithPrice,
+    fx: FxData | null | undefined,
+    locale?: string
+): string | null => {
+    if (!fx?.enabled || !item.itemPrice) return null;
+    const from = item.itemPrice.currency;
+    if (from === fx.targetCurrency) return null;
+    const amount = getPriceValue(item, locale);
+    if (amount === null) return null;
+    const converted = convertAmount(amount, from, fx.targetCurrency, fx.rates);
+    if (converted === null) return null;
+    return getFormatter(fx.targetCurrency, locale).format(converted);
+};
+
+// Formatted converted grand total across per-currency subtotals (minor units),
+// or null if conversion is disabled or ANY currency is unconvertible (a partial
+// sum would be misleading). `totals` come from ListStatistics.
+export const getConvertedTotalString = (
+    totals: { currency: string; total: number }[],
+    fx: FxData | null | undefined,
+    locale?: string
+): string | null => {
+    if (!fx?.enabled) return null;
+    let sum = 0;
+    for (const { currency, total } of totals) {
+        const major = total / Math.pow(10, getMaximumFractionDigits(currency, locale));
+        const converted = convertAmount(major, currency, fx.targetCurrency, fx.rates);
+        if (converted === null) return null;
+        sum += converted;
+    }
+    return getFormatter(fx.targetCurrency, locale).format(sum);
+};

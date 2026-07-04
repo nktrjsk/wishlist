@@ -137,3 +137,11 @@ type DeepPartial<T> = T extends object
 type InviteMethod = "email" | "link";
 
 type LocalUser = Omit<import("$lib/generated/prisma/client").User, "hashedPassword">;
+
+type FxData = {
+    enabled: boolean;
+    targetCurrency: string;
+    base: string | null;
+    rates: Record<string, number>;
+    ratesDate: string | null;
+};
