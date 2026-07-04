@@ -83,6 +83,11 @@ export class ItemCard {
         return this;
     }
 
+    async assertNoConvertedPrice() {
+        await expect(this.priceConverted).not.toBeVisible({ timeout: 1000 });
+        return this;
+    }
+
     async assertNoQuantity() {
         await expect(this.quantityDesired).toHaveText("No limit");
         return this;
