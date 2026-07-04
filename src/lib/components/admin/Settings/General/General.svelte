@@ -5,12 +5,19 @@
     import Claims from "./Claims.svelte";
     import Lists from "./Lists.svelte";
     import Groups from "./Groups.svelte";
+    import Currency from "./Currency.svelte";
     import { getFormatter } from "$lib/i18n";
 
     interface Props {
         config: Pick<
             Config,
-            "claims" | "defaultGroup" | "suggestions" | "enableDefaultListCreation" | "listMode" | "allowPublicLists"
+            | "claims"
+            | "defaultGroup"
+            | "defaultCurrency"
+            | "suggestions"
+            | "enableDefaultListCreation"
+            | "listMode"
+            | "allowPublicLists"
         >;
         groups: Group[];
         hidden?: boolean;
@@ -35,6 +42,8 @@
     <Claims {config} />
 
     <Lists {config} />
+
+    <Currency {config} />
 
     {#if !forGroup}
         <Groups {config} {groups} />

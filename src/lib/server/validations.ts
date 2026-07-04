@@ -54,6 +54,10 @@ export const getSignupSchema = async () => {
     });
 };
 
+export const currencyCode = z
+    .string()
+    .refine((c) => Intl.supportedValuesOf("currency").includes(c), { message: "Invalid currency code" });
+
 export const settingSchema = z.object({
     enableSignup: z.coerce.boolean().default(false),
     enableSuggestions: z.coerce.boolean().default(false),
@@ -75,6 +79,7 @@ export const settingSchema = z.object({
     passwordStrength: z.coerce.number().min(-1).max(5).default(2),
     disablePasswordLogin: z.coerce.boolean().default(false),
     defaultGroup: z.string().optional(),
+    defaultCurrency: currencyCode,
     enableDefaultListCreation: z.coerce.boolean().default(false),
     allowPublicLists: z.coerce.boolean().default(false),
     enableOIDC: z.coerce.boolean().default(false),

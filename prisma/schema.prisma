@@ -32,6 +32,7 @@ model User {
     oauthId             String?
     lists               List[]
     preferredLanguage   String?
+    defaultCurrency     String?
     managedLists        ListManager[]
 
     @@map("user")

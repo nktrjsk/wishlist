@@ -48,6 +48,7 @@
         "clear-sessions": "Clear user sessions",
         "clear-sessions-confirmation": "Are you sure you wish to clear this user's sessions? The user will be logged out of all devices and will be required to log back in.",
         "credentials": "Credentials",
+        "default-currency": "Default currency",
         "default-group": "Default Group",
         "default-group-tooltip": "New users will be added to this group if they were not sent a group specific signup token.",
         "delete-group-message": "Are you sure you want to delete this group? This will delete all lists in this group and any associated items not in another group. <b>This action is irreversible</b>!",

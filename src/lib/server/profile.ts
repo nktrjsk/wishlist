@@ -4,6 +4,7 @@ import { client } from "./prisma";
 import { getFormatter } from "./i18n";
 import { logger } from "./logger";
 import { createImage, tryDeleteImage } from "./image-util";
+import { currencyCode } from "./validations";
 
 export const updateProfile = async (userId: string, formData: FormData) => {
     const $t = await getFormatter();
@@ -11,7 +12,8 @@ export const updateProfile = async (userId: string, formData: FormData) => {
     const schema = z.object({
         name: z.string().trim().min(1, $t("errors.name-must-not-be-blank")),
         username: z.string().trim().min(1, $t("errors.username-must-not-be-blank")),
-        email: z.email()
+        email: z.email(),
+        defaultCurrency: currencyCode.optional()
     });
     const nameData = schema.safeParse(Object.fromEntries(formData));
     if (!nameData.success) {
@@ -23,7 +25,8 @@ export const updateProfile = async (userId: string, formData: FormData) => {
             data: {
                 name: nameData.data.name,
                 username: nameData.data.username,
-                email: nameData.data.email
+                email: nameData.data.email,
+                defaultCurrency: nameData.data.defaultCurrency
             },
             where: {
                 id: userId

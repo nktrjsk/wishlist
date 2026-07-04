@@ -126,6 +126,7 @@ const generateConfig = (configData: z.infer<typeof settingSchema>) => {
             disablePasswordLogin: configData.disablePasswordLogin
         },
         defaultGroup: configData.defaultGroup,
+        defaultCurrency: configData.defaultCurrency,
         enableDefaultListCreation: configData.enableDefaultListCreation,
         allowPublicLists: configData.allowPublicLists,
         oidc: oidcConfig

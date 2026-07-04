@@ -15,16 +15,22 @@ import { getFormatter } from "$lib/server/i18n";
 import { hashPassword, verifyPasswordHash } from "$lib/server/password";
 import { getOIDCConfig } from "$lib/server/openid";
 import { unlinkOauth, updatePicture, updateProfile } from "$lib/server/profile";
+import { getConfig } from "$lib/server/config";
+import { getActiveMembership } from "$lib/server/group-membership";
 
 export const load: PageServerLoad = async ({ locals, fetch }) => {
     const user = requireLogin();
 
     const oidcConfig = await getOIDCConfig(fetch);
 
+    const activeMembership = await getActiveMembership(user);
+    const config = await getConfig(activeMembership.groupId);
+
     return {
         user,
         isProxyUser: locals.isProxyUser,
-        oidcConfig
+        oidcConfig,
+        defaultCurrency: user.defaultCurrency ?? config.defaultCurrency
     };
 };
 

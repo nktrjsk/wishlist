@@ -7,14 +7,16 @@
     import { toaster } from "../toaster";
     import Label from "../Label.svelte";
     import Input from "../Input.svelte";
+    import CurrencySelect from "../CurrencySelect.svelte";
 
     interface Props {
-        user: Pick<LocalUser, "name" | "username" | "email" | "picture">;
+        user: Pick<LocalUser, "name" | "username" | "email" | "picture" | "defaultCurrency">;
         disabled: boolean;
         autocomplete?: boolean;
+        defaultCurrency: string;
     }
 
-    let { user, disabled, autocomplete = true }: Props = $props();
+    let { user, disabled, autocomplete = true, defaultCurrency }: Props = $props();
     const t = getFormatter();
 
     let submitButton: HTMLElement | undefined = $state();
@@ -105,6 +107,15 @@
                     placeholder={user.email}
                     type="text"
                     value={user.email}
+                />
+            </Label>
+
+            <Label value={$t("admin.default-currency")}>
+                <CurrencySelect
+                    id="defaultCurrency"
+                    name="defaultCurrency"
+                    {disabled}
+                    value={user.defaultCurrency ?? defaultCurrency}
                 />
             </Label>
 

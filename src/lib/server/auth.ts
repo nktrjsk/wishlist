@@ -51,7 +51,8 @@ export async function validateSessionToken(token: string): Promise<SessionValida
                     roleId: true,
                     picture: true,
                     oauthId: true,
-                    preferredLanguage: true
+                    preferredLanguage: true,
+                    defaultCurrency: true
                 }
             }
         }
