@@ -34,7 +34,12 @@
     };
 </script>
 
-<EditProfile autocomplete={false} disabled={profileEditDisabled} user={data.editingUser}></EditProfile>
+<EditProfile
+    autocomplete={false}
+    defaultCurrency={data.defaultCurrency}
+    disabled={profileEditDisabled}
+    user={data.editingUser}
+></EditProfile>
 
 <form class="mt-4 flex flex-col flex-wrap gap-4" method="POST" use:enhance>
     <div class="flex flex-wrap gap-4">
