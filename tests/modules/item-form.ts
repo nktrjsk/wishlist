@@ -6,7 +6,6 @@ export class ItemForm {
     private readonly urlField: Locator;
     private readonly nameField: Locator;
     private readonly priceField: Locator;
-    private readonly currencyField: Locator;
     private readonly quantityField: Locator;
     private readonly noLimitCheckbox: Locator;
     private readonly uploadImageField: Locator;
@@ -25,7 +24,6 @@ export class ItemForm {
         this.urlField = page.getByLabel("Item URL");
         this.nameField = page.getByLabel("Item Name");
         this.priceField = page.locator("#formatted-price");
-        this.currencyField = page.getByTestId("currency");
         this.quantityField = page.getByLabel("Quantity");
         this.noLimitCheckbox = page.getByLabel("No limit");
         this.uploadImageField = page.getByLabel("Upload Image");
@@ -60,7 +58,11 @@ export class ItemForm {
     async fillPrice(price: number | string, currency?: string) {
         await this.priceField.fill(price.toString());
         if (currency) {
-            await this.currencyField.fill(currency);
+            const currencyInput = this.page.locator('input[name="currency"]');
+            await currencyInput.click();
+            await currencyInput.fill(currency);
+            await this.page.getByRole("option", { name: currency, exact: true }).click();
+            await expect(currencyInput).toHaveValue(currency);
         }
         return this;
     }
