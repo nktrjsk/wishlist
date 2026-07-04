@@ -43,7 +43,8 @@ export const load = (async ({ params, url, locals, depends, cookies }) => {
         suggestionMethod: config.suggestions.method,
         listOwnerId: list.owner.id,
         listManagers: new Set(list.managers.map(({ userId }) => userId)),
-        loggedInUserId: locals.user?.id || null
+        loggedInUserId: locals.user?.id || null,
+        fx
     };
 
     const items = await getItems(list.id, options);
