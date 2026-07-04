@@ -109,6 +109,7 @@ type Config = {
         disablePasswordLogin: boolean;
     };
     defaultGroup?: string | null;
+    defaultCurrency: string;
     enableDefaultListCreation: boolean;
     allowPublicLists: boolean;
     oidc: OIDCConfig;

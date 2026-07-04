@@ -1,4 +1,5 @@
 import { client } from "./prisma";
+import { getDefaultCurrency } from "$lib/price-formatter";
 
 const GLOBAL = "global";
 
@@ -23,6 +24,7 @@ enum ConfigKey {
     SECURITY_PASSWORD_STRENGTH = "security.passwordStrength",
     SECURITY_DISABLE_PASSWORD_LOGIN = "security.disablePasswordLogin",
     DEFAULT_GROUP = "defaultGroup",
+    DEFAULT_CURRENCY = "defaultCurrency",
     ENABLE_DEFAULT_LIST_CREATION = "enableDefaultListCreation",
     ALLOW_PUBLIC_LISTS = "allowPublicLists",
     OIDC_ENABLE = "oidc.enable",
@@ -69,6 +71,7 @@ const transformers: Record<ConfigKey, Transformer<unknown>> = {
     "security.passwordStrength": numberTransformer,
     "security.disablePasswordLogin": booleanTransformer,
     defaultGroup: stringTransformer,
+    defaultCurrency: stringTransformer,
     enableDefaultListCreation: booleanTransformer,
     allowPublicLists: booleanTransformer,
     "oidc.enable": booleanTransformer,
@@ -106,6 +109,7 @@ const getDefaultConfig = (): Config => ({
         passwordStrength: 2,
         disablePasswordLogin: false
     },
+    defaultCurrency: getDefaultCurrency(),
     enableDefaultListCreation: true,
     allowPublicLists: false,
     oidc: {

@@ -8,6 +8,7 @@ import { requireRole } from "$lib/server/auth";
 import { unlinkOauth, updatePicture, updateProfile } from "$lib/server/profile";
 import { fail } from "@sveltejs/kit";
 import { getOIDCConfig } from "$lib/server/openid";
+import { getConfig } from "$lib/server/config";
 
 export const load: PageServerLoad = async ({ params, fetch }) => {
     const user = await requireRole(Role.ADMIN);
@@ -28,6 +29,7 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
             id: true,
             picture: true,
             oauthId: true,
+            defaultCurrency: true,
             role: {
                 select: {
                     name: true
@@ -38,10 +40,13 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
 
     if (!editingUser) error(404, $t("errors.user-not-found"));
 
+    const config = await getConfig();
+
     return {
         editingUser: {
             ...editingUser
         },
+        defaultCurrency: editingUser.defaultCurrency ?? config.defaultCurrency,
         oidcConfig: await getOIDCConfig(fetch),
         user
     };

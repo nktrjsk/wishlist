@@ -53,7 +53,8 @@ export const actions: Actions = {
             claimsRequireEmail: true,
             listMode: true,
             enableDefaultListCreation: true,
-            allowPublicLists: true
+            allowPublicLists: true,
+            defaultCurrency: true
         });
 
         const configData = groupSettingSchema.safeParse(formData);
@@ -65,7 +66,7 @@ export const actions: Actions = {
         const existingConfig = await getConfig(params.groupId);
         const newConfig: Pick<
             Config,
-            "suggestions" | "claims" | "listMode" | "enableDefaultListCreation" | "allowPublicLists"
+            "suggestions" | "claims" | "listMode" | "enableDefaultListCreation" | "allowPublicLists" | "defaultCurrency"
         > = {
             suggestions: {
                 enable: configData.data.enableSuggestions,
@@ -79,7 +80,8 @@ export const actions: Actions = {
             },
             listMode: configData.data.listMode,
             enableDefaultListCreation: configData.data.enableDefaultListCreation,
-            allowPublicLists: configData.data.allowPublicLists
+            allowPublicLists: configData.data.allowPublicLists,
+            defaultCurrency: configData.data.defaultCurrency
         };
 
         let changingToRegistry = false;

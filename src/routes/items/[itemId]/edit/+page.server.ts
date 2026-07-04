@@ -81,7 +81,8 @@ export const load: PageServerLoad = async ({ params }) => {
                     list.managers.find(({ userId }) => userId === user.id) !== undefined
             }))
         },
-        lists
+        lists,
+        defaultCurrency: user.defaultCurrency ?? config.defaultCurrency
     };
 };
 

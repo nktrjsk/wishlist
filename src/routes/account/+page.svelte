@@ -21,7 +21,7 @@
         <Tabs.Indicator />
     </Tabs.List>
     <Tabs.Content value="profile">
-        <EditProfile disabled={profileEditDisabled} user={data.user} />
+        <EditProfile defaultCurrency={data.defaultCurrency} disabled={profileEditDisabled} user={data.user} />
     </Tabs.Content>
 
     <Tabs.Content class="grid grid-cols-1 gap-4 md:grid-cols-2" value="security">
